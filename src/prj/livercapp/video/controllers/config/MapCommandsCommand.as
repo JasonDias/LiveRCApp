@@ -1,8 +1,3 @@
-/**
- * Copyright (c) 2010 CIE Games, All Rights Reserved
- * @author Jason Dias
- * @contact jason.dias@ciegames.com
- */
 package prj.livercapp.video.controllers.config
 {
 	import org.robotlegs.mvcs.Command;
