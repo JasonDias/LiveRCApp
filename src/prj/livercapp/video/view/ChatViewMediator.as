@@ -29,9 +29,8 @@ package prj.livercapp.video.view
 			{
 				for each (var myMessageVO:MessageVO in e.messages)
 				{
-					var myText:String = "["+myMessageVO.time.toLocaleTimeString()+"] ";
-					myText += "<font color='#"+myMessageVO.color+"'><strong>"+myMessageVO.username+"</strong>: "+myMessageVO.message+"</font>";
-					trace(myText);
+//					var myText:String = "["+myMessageVO.time.toLocaleTimeString()+"] ";
+					var myText:String = "<font color='#"+myMessageVO.color+"'><strong>["+myMessageVO.username+"]</strong>: "+myMessageVO.message+"</font>";
 					chatView.addMessage(myText);
 				}
 			}
