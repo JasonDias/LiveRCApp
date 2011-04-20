@@ -1,10 +1,13 @@
 package prj.livercapp.video.view
 {
 	import com.bit101.components.ComboBox;
+	import com.bit101.components.PushButton;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
+
+	import prj.livercapp.video.events.LiveRCEvent;
 
 	import prj.livercapp.video.events.TracksModelEvent;
 	import prj.livercapp.video.model.vo.TrackVO;
@@ -22,6 +25,13 @@ package prj.livercapp.video.view
 //			_list.numVisibleItems = 50;
 			_list.width=200;
 			_list.addEventListener( Event.SELECT, handleSelectedItem );
+
+			new PushButton( this, 200, 0, "Update Messages", updateChatMessages );
+		}
+
+		private function updateChatMessages( event:Event ):void
+		{
+			dispatchEvent( new LiveRCEvent( LiveRCEvent.UPDATE_CHAT ) );
 		}
 
 		private function handleSelectedItem( event:Event ):void

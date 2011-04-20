@@ -2,6 +2,8 @@ package prj.livercapp.video.controllers.config
 {
 	import org.robotlegs.mvcs.Command;
 
+	import prj.livercapp.video.controllers.GetChatMessages;
+
 	import prj.livercapp.video.controllers.GetTracksCommand;
 	import prj.livercapp.video.controllers.SpawnVideoPlayer;
 	import prj.livercapp.video.events.ApplicationConfigurationEvent;
@@ -13,6 +15,8 @@ package prj.livercapp.video.controllers.config
 		override public function execute():void
 		{
 			commandMap.mapEvent( LiveRCEvent.GET_TRACKS, GetTracksCommand, LiveRCEvent );
+			commandMap.mapEvent( LiveRCEvent.UPDATE_CHAT, GetChatMessages, LiveRCEvent );
+			commandMap.mapEvent( LiveRCEvent.TRACKS_RECEIVED, GetChatMessages, LiveRCEvent );
 			commandMap.mapEvent( TracksModelEvent.TRACK_SELECTED, SpawnVideoPlayer, TracksModelEvent );
 			dispatch(new ApplicationConfigurationEvent(ApplicationConfigurationEvent.CONFIGURE_MODEL));
 		}

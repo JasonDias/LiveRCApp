@@ -19,6 +19,7 @@ package prj.livercapp.video.view
 		{
 			addContextListener( LiveRCEvent.TRACKS_RECEIVED, updateTrackList, LiveRCEvent);
 			addViewListener( TracksModelEvent.TRACK_SELECTED, dispatch );
+			addViewListener( LiveRCEvent.UPDATE_CHAT, dispatch );
 		}
 
 		private function updateTrackList(e:LiveRCEvent):void

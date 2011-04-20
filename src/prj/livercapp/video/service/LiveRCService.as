@@ -7,6 +7,7 @@ package prj.livercapp.video.service
 	import org.robotlegs.mvcs.Actor;
 
 	import prj.livercapp.video.events.LiveRCEvent;
+	import prj.livercapp.video.model.ChatModel;
 	import prj.livercapp.video.model.TracksModel;
 	import prj.livercapp.video.model.vo.TrackVO;
 
@@ -15,9 +16,28 @@ package prj.livercapp.video.service
 		[Inject]
 		public var tracksModel:TracksModel;
 
+		[Inject]
+		public var chatModel:ChatModel;
+
 		public function LiveRCService()
 		{
 			super();
+		}
+
+		public function getChatMessages():void
+		{
+			var myURLLoader:URLLoader = new URLLoader();
+			myURLLoader.addEventListener( Event.COMPLETE, onChatMessagesReceived );
+			myURLLoader.load( new URLRequest( "http://live4.liverc.com/chat/chat.txt?nocache=" + Math.random() * 10000 ) );
+		}
+
+		private function onChatMessagesReceived(event:Event):void
+		{
+			var data:String = event.target.data;
+			if(data)
+			{
+				chatModel.parseMessages(data);
+			}
 		}
 
 		public function getTracks():void
