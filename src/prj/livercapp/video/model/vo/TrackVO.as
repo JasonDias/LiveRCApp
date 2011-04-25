@@ -11,6 +11,7 @@ package prj.livercapp.video.model.vo
 		public var currentEventID:int;
 		public var currentEventName:String;
 		public var customStream:String;
+		public var customStreamHD:String;
 
 		public function TrackVO()
 		{

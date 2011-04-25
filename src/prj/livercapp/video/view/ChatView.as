@@ -21,7 +21,7 @@ package prj.livercapp.video.view
 
 		public function addMessage(myMessage:String):void
 		{
-			_textArea.textField.htmlText += myMessage+"<br />";
+			_textArea.textField.htmlText = myMessage+"<br />"+_textArea.textField.htmlText;
 		}
 
 		public function clearMessages():void

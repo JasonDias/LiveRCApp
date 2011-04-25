@@ -5,7 +5,9 @@ package prj.livercapp.video.view
 
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.TimerEvent;
 	import flash.utils.Dictionary;
+	import flash.utils.Timer;
 
 	import prj.livercapp.video.events.LiveRCEvent;
 
@@ -17,21 +19,36 @@ package prj.livercapp.video.view
 		private var _list:ComboBox;
 		private var _currentSelectedValue:int;
 		private var _tracks:Dictionary;
-
+		private var _updateMessagesButton:PushButton;
+		private var _chatUpdateTimer:Timer;
 		public function TrackSelectionMenu()
 		{
+			_chatUpdateTimer = new Timer(10000, 0);
+			_chatUpdateTimer.addEventListener(TimerEvent.TIMER, chatUpdateTimer);
 			_tracks = new Dictionary();
 			_list = new ComboBox( this, 0, 0, "Tracks");
 //			_list.numVisibleItems = 50;
 			_list.width=200;
 			_list.addEventListener( Event.SELECT, handleSelectedItem );
 
-			new PushButton( this, 200, 0, "Update Messages", updateChatMessages );
+			_updateMessagesButton = new PushButton( this, 200, 0, "Update Messages", updateChatMessages );
+			_updateMessagesButton.toggle=true;
+		}
+
+		private function chatUpdateTimer(event:TimerEvent):void
+		{
+			dispatchEvent( new LiveRCEvent( LiveRCEvent.UPDATE_CHAT ) );
 		}
 
 		private function updateChatMessages( event:Event ):void
 		{
-			dispatchEvent( new LiveRCEvent( LiveRCEvent.UPDATE_CHAT ) );
+			if(_updateMessagesButton.selected)
+			{
+				dispatchEvent( new LiveRCEvent( LiveRCEvent.UPDATE_CHAT ) );
+				_chatUpdateTimer.start();
+			} else {
+				_chatUpdateTimer.stop();
+			}
 		}
 
 		private function handleSelectedItem( event:Event ):void

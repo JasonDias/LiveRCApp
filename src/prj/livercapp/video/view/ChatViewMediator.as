@@ -14,13 +14,7 @@ package prj.livercapp.video.view
 
 		override public function onRegister():void
 		{
-			addContextListener(LiveRCEvent.UPDATE_CHAT, clearMessages);
 			addContextListener(LiveRCEvent.CHAT_UPDATED, updateMessages);
-		}
-
-		private function clearMessages(e:Event):void
-		{
-			chatView.clearMessages();
 		}
 
 		private function updateMessages(e:LiveRCEvent):void
