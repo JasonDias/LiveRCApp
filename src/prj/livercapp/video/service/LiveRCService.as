@@ -57,9 +57,7 @@ package prj.livercapp.video.service
 				for each ( var trackXML:XML in myXML..Track )
 				{
 					var trackID:int = int(trackXML.attribute( "trackID" ));
-					if(trackID == 51 || trackID == 88 || trackID == 140)
-					{
-						var myTrack:TrackVO = new TrackVO();
+					var myTrack:TrackVO = new TrackVO();
 						myTrack.trackID = trackID;
 						myTrack.trackName = trackXML.attribute( "trackName" );
 						myTrack.trackDescription = trackXML.attribute( "description" );
@@ -69,8 +67,11 @@ package prj.livercapp.video.service
 						myTrack.currentEventName = trackXML.attribute( "eventName" );
 						myTrack.customStream = trackXML.attribute( "aapHDStream" );
 						myTrack.customStreamHD = trackXML.attribute( "aapHDStream" );
-						tracksModel.tracks.push( myTrack );
+					if(trackID == 51 || trackID == 88 || trackID == 140 || trackID == 34 || trackID == 69 || trackID == 35 || trackID == 68)
+					{
+						tracksModel.tracks.unshift( myTrack );
 					}
+					tracksModel.tracks.push( myTrack );
 				}
 				dispatch( myEvent );
 			}

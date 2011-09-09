@@ -8,8 +8,10 @@ package prj.livercapp.video.events
 	{
 		public static const TRACKS_UPDATED:String = "TracksModelEvent.TRACKS_UPDATED";
 		public static const TRACK_SELECTED:String = "TracksModelEvent.TRACK_SELECTED";
+		public static const CAMERA_SELECTED:String = "TracksModelEvent.CAMERA_SELECTED";
 
 		public var track:TrackVO;
+		public var camera:int;
 
 		public function TracksModelEvent( type:String, bubbles:Boolean = false, cancelable:Boolean = false )
 		{
@@ -20,6 +22,7 @@ package prj.livercapp.video.events
 		{
 			var tracksModelEvent:TracksModelEvent = new TracksModelEvent( type, bubbles, cancelable );
 			tracksModelEvent.track = track;
+			tracksModelEvent.camera = camera;
 			return tracksModelEvent;
 		}
 

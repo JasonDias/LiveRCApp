@@ -1,6 +1,7 @@
 package prj.livercapp.video.view
 {
 	import com.bit101.components.HBox;
+	import com.bit101.components.NumericStepper;
 	import com.bit101.components.PushButton;
 	import com.bit101.components.RotarySelector;
 	import com.bit101.components.TextArea;
@@ -31,6 +32,9 @@ package prj.livercapp.video.view
 		private var _status:TextArea;
 		private var _fullscreen:PushButton;
 		private var _VBox:VBox;
+		private var _selector:NumericStepper;
+		private var _camera:int=1;
+		private var _description:TextArea;
 
 		public function VideoPlayer( trackVO:TrackVO )
 		{
@@ -38,7 +42,7 @@ package prj.livercapp.video.view
 			_window = new Window(this, 0, 0, trackVO.trackName);
 			_window.addEventListener( Event.CLOSE, handleClose );
 			_window.hasCloseButton=true;
-			_streamName = (trackVO.customStream)?trackVO.customStream:"liverc_Camera1_"+trackVO.trackID;
+			_streamName = (trackVO.customStream)?trackVO.customStream:"liverc_Camera"+_camera+"_"+trackVO.trackID;
 			_window.setSize( 870, 480 );
 			_window.title += " | "+_streamName;
 			_video = new Video( 720, 480 );
@@ -49,11 +53,27 @@ package prj.livercapp.video.view
 			_status.setSize(150, 150);
 			_HBox.addChild(_video);
 			_fullscreen = new PushButton(_VBox, 720, 55, "Full Screen", goFullScreen);
+			_selector = new NumericStepper(_VBox, 720, 65, cameraChanged);
+			_selector.minimum = 1;
+			_selector.maximum = 5;
+			_selector.step=1;
+			_selector.labelPrecision=0;
+			_selector.enabled=(!_trackVO.customStream);
+			_description = new TextArea(_VBox, 720, 75, _trackVO.trackDescription);
+			_description.setSize(150, 150);
+		}
+
+		private function cameraChanged( event:Event ):void
+		{
+			_camera = _selector.value;
+			_streamName = "liverc_Camera"+_camera+"_"+_trackVO.trackID;
+			_window.title = _trackVO.trackName+" | "+_streamName;
+			_netStream.play( _streamName, -1 );
 		}
 
 		private function goFullScreen( event:Event ):void
 		{
-			stage.fullScreenSourceRect = _video.getRect(stage);
+			stage.fullScreenSourceRect = _video.getRect(this);
 			stage.displayState=StageDisplayState.FULL_SCREEN;
 		}
 
@@ -70,6 +90,8 @@ package prj.livercapp.video.view
 			_netConnection.addEventListener( SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler );
 			_netConnection.client = this;
 			var command:String = (_trackVO.customStream)?"rtmp://cp100553.live.edgefcs.net/live":"rtmp://stream.liverc.com/liverc_broadcast";
+			if(_trackVO.currentEventID == 3721)
+				command = "rtmp://stream5.liverc.com/liverc_broadcast";
 			_netConnection.connect( command );
 		}
 
@@ -84,7 +106,7 @@ package prj.livercapp.video.view
 			if ( event.info.code == "NetConnection.Connect.Success" )
 			{
 				_netStream = new NetStream( _netConnection );
-				_netStream.bufferTime = 5;
+				_netStream.bufferTime = 15;
 				_netStream.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
 				_netStream.client = this;
 				_video.attachNetStream( _netStream );

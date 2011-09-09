@@ -7,6 +7,7 @@ package prj.livercapp.video.model
 	public class TracksModel extends Actor
 	{
 		public var tracks:Vector.<TrackVO> = new Vector.<TrackVO>();
+		public var camera:int = 1;
 
 		public function TracksModel()
 		{
