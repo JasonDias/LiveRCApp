@@ -1,6 +1,7 @@
 package prj.livercapp.video.view
 {
 	import com.bit101.components.HBox;
+	import com.bit101.components.Meter;
 	import com.bit101.components.NumericStepper;
 	import com.bit101.components.PushButton;
 	import com.bit101.components.RotarySelector;
@@ -13,9 +14,11 @@ package prj.livercapp.video.view
 	import flash.events.Event;
 	import flash.events.NetStatusEvent;
 	import flash.events.SecurityErrorEvent;
+	import flash.events.TimerEvent;
 	import flash.media.Video;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
+	import flash.utils.Timer;
 
 	import prj.livercapp.video.model.vo.TrackVO;
 
@@ -35,6 +38,8 @@ package prj.livercapp.video.view
 		private var _selector:NumericStepper;
 		private var _camera:int=1;
 		private var _description:TextArea;
+		private var _meter:Meter;
+		private var _bufferTimer:Timer;
 
 		public function VideoPlayer( trackVO:TrackVO )
 		{
@@ -61,6 +66,20 @@ package prj.livercapp.video.view
 			_selector.enabled=(!_trackVO.customStream);
 			_description = new TextArea(_VBox, 720, 75, _trackVO.trackDescription);
 			_description.setSize(150, 150);
+
+			_meter = new Meter(_VBox, 720, 85, "Buffer");
+			_meter.minimum=0;
+			_meter.maximum=_BUFFER;
+			_meter.setSize(145, 50);
+
+			_bufferTimer = new Timer(500);
+			_bufferTimer.addEventListener(TimerEvent.TIMER, updateBufferDisplay);
+		}
+
+		private function updateBufferDisplay(event:TimerEvent):void
+		{
+			_meter.value = _netStream.bufferLength;
+			trace(_meter.value)
 		}
 
 		private function cameraChanged( event:Event ):void
@@ -80,7 +99,11 @@ package prj.livercapp.video.view
 		private function handleClose( event:Event ):void
 		{
 			_netConnection.close();
+			_bufferTimer.stop();
+			_bufferTimer.removeEventListener(TimerEvent.TIMER, updateBufferDisplay);
+			_bufferTimer = null;
 			parent.removeChild(this);
+
 		}
 
 		public function connect():void
@@ -100,17 +123,20 @@ package prj.livercapp.video.view
 			_status.text += event.text + "\n";
 		}
 
+		private static const _BUFFER:int = 15;
+
 		private function netStatusUpdate( event:NetStatusEvent ):void
 		{
 			_status.text += event.info.code + "\n";
 			if ( event.info.code == "NetConnection.Connect.Success" )
 			{
 				_netStream = new NetStream( _netConnection );
-				_netStream.bufferTime = 15;
+				_netStream.bufferTime = _BUFFER;
 				_netStream.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
 				_netStream.client = this;
 				_video.attachNetStream( _netStream );
 				_netStream.play( _streamName, -1 );
+				_bufferTimer.start();
 			}
 		}
 
