@@ -1,6 +1,7 @@
 package prj.livercapp.video.view
 {
 	import com.bit101.components.HBox;
+	import com.bit101.components.Knob;
 	import com.bit101.components.Meter;
 	import com.bit101.components.NumericStepper;
 	import com.bit101.components.PushButton;
@@ -40,52 +41,67 @@ package prj.livercapp.video.view
 		private var _description:TextArea;
 		private var _meter:Meter;
 		private var _bufferTimer:Timer;
+		private var _videoWindow:Window;
+		private var _rotarySelector:RotarySelector;
+		private var _qualitys:Array = [{w:1280, h:720, q:"720"}, {w:640, h:480, q:"480"}, {w:320, h:240, q:"240"}];
 
 		public function VideoPlayer( trackVO:TrackVO )
 		{
 			_trackVO = trackVO;
-			_window = new Window(this, 0, 0, trackVO.trackName);
+			_window = new Window(this, 0, 20, trackVO.trackName);
 			_window.addEventListener( Event.CLOSE, handleClose );
 			_window.hasCloseButton=true;
-			_streamName = (trackVO.customStream)?trackVO.customStream:"liverc_Camera"+_camera+"_"+trackVO.trackID;
-			_window.setSize( 870, 480 );
-			_window.title += " | "+_streamName;
-			_video = new Video( 720, 480 );
-			_HBox = new HBox(_window.content);
-			_HBox.spacing = 1;
-			_VBox = new VBox(_HBox);
-			_status = new TextArea(_VBox, 720, 0, "Loading...");
+			_window.setSize( 150, 550 );
+
+			_VBox = new VBox(_window.content);
+
+			_status = new TextArea(_VBox, 0, 0, "Loading...");
 			_status.setSize(150, 150);
-			_HBox.addChild(_video);
-			_fullscreen = new PushButton(_VBox, 720, 55, "Full Screen", goFullScreen);
-			_selector = new NumericStepper(_VBox, 720, 65, cameraChanged);
+
+			_fullscreen = new PushButton(_VBox, 0, 55, "Full Screen", goFullScreen);
+			_selector = new NumericStepper(_VBox, 0, 65, cameraChanged);
 			_selector.minimum = 1;
 			_selector.maximum = 5;
 			_selector.step=1;
 			_selector.labelPrecision=0;
-			_selector.enabled=(!_trackVO.customStream);
-			_description = new TextArea(_VBox, 720, 75, _trackVO.trackDescription);
+			_selector.enabled=(!_trackVO.aap);
+			_description = new TextArea(_VBox, 0, 75, _trackVO.trackDescription);
 			_description.setSize(150, 150);
 
-			_meter = new Meter(_VBox, 720, 85, "Buffer");
+			_meter = new Meter(_VBox, 0, 85, "Buffer");
 			_meter.minimum=0;
 			_meter.maximum=_BUFFER;
 			_meter.setSize(145, 50);
 
+			_rotarySelector = new RotarySelector(_VBox, 5, 105, "Quality", changeQuality);
+			_rotarySelector.numChoices = _qualitys.length;
+
 			_bufferTimer = new Timer(500);
 			_bufferTimer.addEventListener(TimerEvent.TIMER, updateBufferDisplay);
+
+			_streamName = getStreamName();
+
+			_video = new Video( 1280, 720 );
+			_videoWindow = new Window(this, 150, 0, trackVO.trackName);
+			_videoWindow.setSize(1280, 720);
+			_videoWindow.title += " | "+_streamName;
+			_videoWindow.content.addChild(_video);
+		}
+
+		private function getStreamName():String
+		{
+			return (_trackVO.aap) ? "mp4:liverc_Camera" + _camera + "_" + _trackVO.trackID + "_" + _qualitys[_rotarySelector.choice].q + "p" : "mp4:liverc_Camera" + _camera + "_" + _trackVO.trackID;
 		}
 
 		private function updateBufferDisplay(event:TimerEvent):void
 		{
 			_meter.value = _netStream.bufferLength;
-			trace(_meter.value)
 		}
 
 		private function cameraChanged( event:Event ):void
 		{
 			_camera = _selector.value;
-			_streamName = "liverc_Camera"+_camera+"_"+_trackVO.trackID;
+			_streamName = "mp4:liverc_Camera"+_camera+"_"+_trackVO.trackID;
 			_window.title = _trackVO.trackName+" | "+_streamName;
 			_netStream.play( _streamName, -1 );
 		}
@@ -96,8 +112,21 @@ package prj.livercapp.video.view
 			stage.displayState=StageDisplayState.FULL_SCREEN;
 		}
 
+		private function changeQuality( event:Event ):void
+		{
+			_streamName = getStreamName();
+			var width:Number = _qualitys[_rotarySelector.choice].w;
+			var height:Number = _qualitys[_rotarySelector.choice].h;
+			_videoWindow.setSize(width, height);
+			_video.width = width;
+			_video.height = height;
+			_videoWindow.title = _trackVO.trackName + " | " +_streamName;
+			_netStream.play( _streamName, -1 );
+		}
+
 		private function handleClose( event:Event ):void
 		{
+			_netStream.close();
 			_netConnection.close();
 			_bufferTimer.stop();
 			_bufferTimer.removeEventListener(TimerEvent.TIMER, updateBufferDisplay);
@@ -112,9 +141,7 @@ package prj.livercapp.video.view
 			_netConnection.addEventListener( NetStatusEvent.NET_STATUS, netStatusUpdate );
 			_netConnection.addEventListener( SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler );
 			_netConnection.client = this;
-			var command:String = (_trackVO.customStream)?"rtmp://cp100553.live.edgefcs.net/live":"rtmp://stream.liverc.com/liverc_broadcast";
-			if(_trackVO.currentEventID == 3721)
-				command = "rtmp://stream5.liverc.com/liverc_broadcast";
+			var command:String = (_trackVO.aap)?"rtmp://stream.liverc.com/liverc_broadcast_premium":"rtmp://stream.liverc.com/liverc_broadcast";
 			_netConnection.connect( command );
 		}
 
@@ -137,6 +164,9 @@ package prj.livercapp.video.view
 				_video.attachNetStream( _netStream );
 				_netStream.play( _streamName, -1 );
 				_bufferTimer.start();
+			} else if(event.info.code == "NetConnection.Connect.Failed")
+			{
+
 			}
 		}
 
@@ -150,6 +180,7 @@ package prj.livercapp.video.view
 //			_video.width = info.width;
 //			_video.height = info.height;
 			_status.text += _video.width+ " "+_video.height+ "\n";
+			_status.text += info + "\n";
 			trace(_video.width+ " "+_video.height)
 		}
 

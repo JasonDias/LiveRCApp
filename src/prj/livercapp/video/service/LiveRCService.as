@@ -28,7 +28,7 @@ package prj.livercapp.video.service
 		{
 			var myURLLoader:URLLoader = new URLLoader();
 			myURLLoader.addEventListener( Event.COMPLETE, onChatMessagesReceived );
-			myURLLoader.load( new URLRequest( "http://live4.liverc.com/chat/chat.txt?nocache=" + Math.random() * 10000 ) );
+			myURLLoader.load( new URLRequest( "http://live.liverc.com/content/chat/chat.txt?_=" + Math.random() * 10000 ) );
 		}
 
 		private function onChatMessagesReceived(event:Event):void
@@ -44,35 +44,51 @@ package prj.livercapp.video.service
 		{
 			var myURLLoader:URLLoader = new URLLoader();
 			myURLLoader.addEventListener( Event.COMPLETE, onGetTracksReceived );
-			myURLLoader.load( new URLRequest( "http://live4.liverc.com/getTrackList.php?nocache=" + Math.random() * 10000 ) );
+			myURLLoader.load( new URLRequest( "http://live.liverc.com/data/getEventList.php?_=" + Math.random() * 10000 ) );
 		}
 
 		private function onGetTracksReceived( event:Event ):void
 		{
-			var myXML:XML = new XML( event.target.data );
-			if(myXML)
+			var myData:Object = JSON.parse( event.target.data );
+			if(myData)
 			{
 				var myEvent:LiveRCEvent = new LiveRCEvent( LiveRCEvent.TRACKS_RECEIVED );
-				XML.ignoreWhitespace = true;
-				for each ( var trackXML:XML in myXML..Track )
+                var myTrack:TrackVO;
+                var trackID:int;
+                var trackData:Object;
+                for each ( trackData in myData.local )
 				{
-					var trackID:int = int(trackXML.attribute( "trackID" ));
-					var myTrack:TrackVO = new TrackVO();
-						myTrack.trackID = trackID;
-						myTrack.trackName = trackXML.attribute( "trackName" );
-						myTrack.trackDescription = trackXML.attribute( "description" );
-						myTrack.dataDir = trackXML.attribute( "dataDir" );
-						myTrack.raceStatus = trackXML.attribute( "raceStatus" );
-						myTrack.currentEventID = trackXML.attribute( "eventID" );
-						myTrack.currentEventName = trackXML.attribute( "eventName" );
-						myTrack.customStream = trackXML.attribute( "aapHDStream" );
-						myTrack.customStreamHD = trackXML.attribute( "aapHDStream" );
-					if(trackID == 51 || trackID == 88 || trackID == 140 || trackID == 34 || trackID == 69 || trackID == 35 || trackID == 68)
+                    trackID = trackData.track_id;
+					myTrack = new TrackVO();
+                    myTrack.trackID = trackID;
+                    myTrack.trackName = trackData.track_name;
+                    myTrack.trackDescription = trackData.description;
+                    myTrack.dataDir = trackData.data_directory;
+                    myTrack.raceStatus = trackData.status;
+                    myTrack.currentEventID = trackData.event_id;
+                    myTrack.currentEventName = trackData.event_title;
+                    myTrack.aap = ((trackData.aap_event == 1));
+					if(trackID == 56 || trackID == 138 || trackID == 51 || trackID == 88 || trackID == 140 || trackID == 34 || trackID == 69 || trackID == 35 || trackID == 68 || trackID == 190 || trackID == 27)
 					{
 						tracksModel.tracks.unshift( myTrack );
 					}
 					tracksModel.tracks.push( myTrack );
 				}
+                for each ( trackData in myData.premium )
+                {
+                    trackID = trackData.track_id;
+                    myTrack = new TrackVO();
+                    myTrack.trackID = trackID;
+                    myTrack.trackName = trackData.track_name;
+                    myTrack.trackDescription = trackData.description;
+                    myTrack.dataDir = trackData.data_directory;
+                    myTrack.raceStatus = trackData.status;
+                    myTrack.currentEventID = trackData.event_id;
+                    myTrack.currentEventName = trackData.event_title;
+                    myTrack.aap = ((trackData.aap_event == 1));
+                    tracksModel.tracks.unshift( myTrack );
+                    tracksModel.tracks.push( myTrack );
+                }
 				dispatch( myEvent );
 			}
 		}

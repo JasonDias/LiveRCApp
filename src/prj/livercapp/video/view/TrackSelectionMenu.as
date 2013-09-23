@@ -1,6 +1,7 @@
 package prj.livercapp.video.view
 {
 	import com.bit101.components.ComboBox;
+	import com.bit101.components.List;
 	import com.bit101.components.PushButton;
 
 	import flash.display.Sprite;
@@ -26,12 +27,10 @@ package prj.livercapp.video.view
 			_chatUpdateTimer = new Timer(10000, 0);
 			_chatUpdateTimer.addEventListener(TimerEvent.TIMER, chatUpdateTimer);
 			_tracks = new Dictionary();
-			_list = new ComboBox( this, 0, 0, "Tracks");
-//			_list.numVisibleItems = 50;
-			_list.width=200;
+			_list = new ComboBox(this, 0, 0, "Tracks", []);
+			_list.width = 150;
 			_list.addEventListener( Event.SELECT, handleSelectedItem );
-
-			_updateMessagesButton = new PushButton( this, 200, 0, "Update Messages", updateChatMessages );
+			_updateMessagesButton = new PushButton( this, 0, 625, "Update Messages", updateChatMessages );
 			_updateMessagesButton.toggle=true;
 		}
 
@@ -53,9 +52,10 @@ package prj.livercapp.video.view
 
 		private function handleSelectedItem( event:Event ):void
 		{
-			if(_list.selectedItem.value != _currentSelectedValue)
+			var item:int = _list.selectedItem.value;
+			if(item != _currentSelectedValue)
 			{
-				_currentSelectedValue = _list.selectedItem.value;
+				_currentSelectedValue = item;
 				var tracksModelEvent:TracksModelEvent = new TracksModelEvent( TracksModelEvent.TRACK_SELECTED );
 				tracksModelEvent.track = _tracks[_currentSelectedValue];
 				dispatchEvent( tracksModelEvent );

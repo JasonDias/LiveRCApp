@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="Flex" version="4">
-  <component name="Flex.Build.Configuration">
-    <option name="DO_BUILD" value="true" />
-    <option name="MAIN_CLASS" value="LiveRCApp" />
-    <option name="OUTPUT_FILE_NAME" value="LiveRCApp.swf" />
-    <option name="TARGET_PLAYER_VERSION" value="10.0" />
-    <option name="ADDITIONAL_COMPILER_OPTIONS" value="-static-link-runtime-shared-libraries=true" />
-    <option name="VERSION" value="3" />
+  <component name="FlexBuildConfigurationManager" active="LiveRCApp">
+    <configurations>
+      <configuration name="LiveRCApp" main-class="LiveRCApp" output-file="LiveRCApp.swf" output-folder="$MODULE_DIR$/out/production/LiveRCApp">
+        <dependencies target-player="11.1">
+          <entries>
+            <entry library-id="a74303c5-0467-4245-b0c0-2c9dd24bec97">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="f2befcc7-8fcc-44fa-a23e-a94d27a3cb85">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="a5765992-56bb-4760-89b6-4cbcf488c464">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="Flex4.6.0_AIR3.1" />
+        </dependencies>
+        <compiler-options>
+          <option name="additionalOptions" value="-static-link-runtime-shared-libraries=true" />
+        </compiler-options>
+        <packaging-air-desktop />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+    </configurations>
+    <compiler-options />
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="flex_sdk_4.1 (player 10.0)" jdkType="Flex SDK Type" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/MinimalComps_0_9_6.swc!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="a74303c5-0467-4245-b0c0-2c9dd24bec97" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/robotlegs-framework-v1.1.2.swc!/" />
         </CLASSES>
@@ -33,10 +43,22 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="f2befcc7-8fcc-44fa-a23e-a94d27a3cb85" />
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/SwiftSuspenders-v1.5.1.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="jdk" jdkName="Flex4.6.0_AIR3.1" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="a5765992-56bb-4760-89b6-4cbcf488c464" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/libs/MinimalComps_0_9_10.swc!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -12,7 +12,7 @@ package prj.livercapp.video.view
 
 		public function ChatView()
 		{
-			_window = new Window(this, 0, 480, "Messages");
+			_window = new Window(this, 200, 480, "Messages");
 			_window.setSize(870, 150);
 			_textArea = new TextArea(_window, 0, 20);
 			_textArea.setSize(870, 150);
