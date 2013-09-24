@@ -44,6 +44,7 @@ package prj.livercapp.video.view
 		private var _videoWindow:Window;
 		private var _rotarySelector:RotarySelector;
 		private var _qualitys:Array = [{w:1280, h:720, q:"720"}, {w:640, h:480, q:"480"}, {w:320, h:240, q:"240"}];
+        private var _bufferTimeStepper:NumericStepper;
 
 		public function VideoPlayer( trackVO:TrackVO )
 		{
@@ -76,6 +77,13 @@ package prj.livercapp.video.view
 			_rotarySelector = new RotarySelector(_VBox, 5, 105, "Quality", changeQuality);
 			_rotarySelector.numChoices = _qualitys.length;
 
+            _bufferTimeStepper = new NumericStepper(_VBox, _rotarySelector.width, 105, adjustBufferTime);
+            _bufferTimeStepper.minimum = 0;
+            _bufferTimeStepper.maximum = 60;
+            _bufferTimeStepper.value = _BUFFER;
+            _bufferTimeStepper.step = 1;
+            _bufferTimeStepper.labelPrecision = 0;
+
 			_bufferTimer = new Timer(500);
 			_bufferTimer.addEventListener(TimerEvent.TIMER, updateBufferDisplay);
 
@@ -105,6 +113,11 @@ package prj.livercapp.video.view
 			_window.title = _trackVO.trackName+" | "+_streamName;
 			_netStream.play( _streamName, -1 );
 		}
+
+        public function adjustBufferTime( event:Event ):void
+        {
+            _netStream.bufferTime = _bufferTimeStepper.value;
+        }
 
 		private function goFullScreen( event:Event ):void
 		{
