@@ -68,7 +68,7 @@ package prj.livercapp.video.service
                     myTrack.currentEventID = trackData.event_id;
                     myTrack.currentEventName = trackData.event_title;
                     myTrack.aap = ((trackData.aap_event == 1));
-					if(trackID == 56 || trackID == 138 || trackID == 51 || trackID == 88 || trackID == 140 || trackID == 34 || trackID == 69 || trackID == 35 || trackID == 68 || trackID == 190 || trackID == 27)
+					if(trackID == 167 || trackID == 138 || trackID == 51 || trackID == 88 || trackID == 140 || trackID == 34 || trackID == 69 || trackID == 35 || trackID == 68 || trackID == 190 || trackID == 27)
 					{
 						tracksModel.tracks.unshift( myTrack );
 					}
@@ -86,8 +86,12 @@ package prj.livercapp.video.service
                     myTrack.currentEventID = trackData.event_id;
                     myTrack.currentEventName = trackData.event_title;
                     myTrack.aap = ((trackData.aap_event == 1));
-                    tracksModel.tracks.unshift( myTrack );
-                    tracksModel.tracks.push( myTrack );
+					tracksModel.tracks.push( myTrack );
+
+					if(trackID == 167)
+					{
+                    	tracksModel.tracks.unshift( myTrack );
+					}
                 }
 				dispatch( myEvent );
 			}

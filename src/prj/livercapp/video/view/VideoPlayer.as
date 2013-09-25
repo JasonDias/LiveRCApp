@@ -154,7 +154,7 @@ package prj.livercapp.video.view
 			_netConnection.addEventListener( NetStatusEvent.NET_STATUS, netStatusUpdate );
 			_netConnection.addEventListener( SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler );
 			_netConnection.client = this;
-			var command:String = (_trackVO.aap)?"rtmp://stream.liverc.com/liverc_broadcast_premium":"rtmp://stream.liverc.com/liverc_broadcast";
+			var command:String = (_trackVO.aap)?"rtmp://live.cdn.liverc.com/liverc_broadcast_premium_ec2":"rtmp://stream.liverc.com/liverc_broadcast";
 			_netConnection.connect( command );
 		}
 
